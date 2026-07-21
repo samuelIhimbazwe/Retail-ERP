@@ -1,36 +1,65 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# RBIAP — Retail Business Intelligence & Accounting Platform
 
-## Getting Started
+Retail OS for shops: Counter Mode (sell / stock check / receive / customer pay), inventory, purchasing, accounting, tax, BI, and alerts.
 
-First, run the development server:
+## Stack
+
+- Next.js 16 · React 19 · TypeScript · Tailwind CSS 4
+- Prisma 6 · **SQLite** (local — default)
+- Auth.js (NextAuth v5) · Zod · bcryptjs · html5-qrcode
+
+## Real business setup (recommended)
 
 ```bash
+npm install
+cp .env.example .env
+# Set AUTH_SECRET to a long random string
+npm run db:wipe    # empty database (destroys all data)
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000 → **first-run setup** creates your business, main branch, chart of accounts, and owner account. Then invite staff from **User Management**.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+To wipe an existing demo DB and start clean: `npm run db:wipe`, restart the app, complete `/setup`.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Optional demo data
 
-## Learn More
+```bash
+npm run db:seed    # loads "Kigali Fresh" sample tenant
+# or
+npm run db:reset   # wipe + seed
+```
 
-To learn more about Next.js, take a look at the following resources:
+Demo login (seed only): `jean@kigalifresh.rw` / `demo1234`
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+After `db:wipe` / `db:reset`, sign out and sign in again so the session matches new DB ids.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Optional SMTP
 
-## Deploy on Vercel
+Add to `.env` to email invites and password resets:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```
+SMTP_HOST=smtp.example.com
+SMTP_PORT=587
+SMTP_USER=...
+SMTP_PASS=...
+SMTP_FROM=RBIAP <noreply@yourbusiness.com>
+AUTH_URL=http://localhost:3000
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Without SMTP, admins still get a copyable link / mailto draft.
+
+## Live modules
+
+Auth, Products, Inventory, POS (split pay), Stock check, Receive, Customer pay, Dashboard, Accounting, Tax, Banking, Notifications, Reports, Branches, Warehouse, Purchasing, Customers, Procurement, Loyalty, BI, Security, Payroll, Settings, AI assistant, Integrations, User Management, Global search, Invites.
+
+### Key write flows
+
+| Action | Where |
+|--------|--------|
+| Sell / split pay | Counter → Sell |
+| Add product | Products → **Add product** |
+| Adjust stock | Inventory → **Adjust stock** |
+| Generate / create POs | Procurement / Purchasing |
+| Invite staff | User Management → **Invite user** |
+| First-run | `/setup` (empty DB only) |

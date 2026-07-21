@@ -1,7 +1,11 @@
-import type { NextConfig } from "next";
+﻿import type { NextConfig } from "next";
+import path from "path";
 
+// Parent lockfile at C:\Users\ihimb confuses Turbopack; pin root to this app.
 const nextConfig: NextConfig = {
-  /* config options here */
+  turbopack: {
+    root: path.resolve(process.cwd()),
+  },
 };
 
 export default nextConfig;
