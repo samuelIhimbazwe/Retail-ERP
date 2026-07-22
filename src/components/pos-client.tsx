@@ -321,8 +321,8 @@ export function PosClient({
   }, [total]);
 
   return (
-    <div className="flex h-[calc(100vh-7rem)] flex-col">
-      <div className="mb-3 flex items-center justify-between gap-2 print:hidden">
+    <div className="flex min-h-0 flex-col overflow-y-auto lg:h-[calc(100dvh-var(--topbar-height)-3rem)] lg:overflow-hidden">
+      <div className="mb-2 flex shrink-0 items-center justify-between gap-2 print:hidden">
         <Link href="/counter" className="inline-flex items-center gap-1.5 text-sm text-ink-muted hover:text-ink">
           <ArrowLeft className="h-4 w-4" /> Counter
         </Link>
@@ -334,7 +334,7 @@ export function PosClient({
       {scanMsg && (
         <div
           className={cn(
-            "mb-2 rounded-xl px-3 py-2.5 text-sm font-semibold print:hidden",
+            "mb-2 shrink-0 rounded-xl px-3 py-2 text-sm font-semibold print:hidden",
             scanMsg.tone === "success" && "bg-success-soft text-success",
             scanMsg.tone === "warn" && "bg-warn-soft text-warn",
             scanMsg.tone === "error" && "bg-danger-soft text-danger",
@@ -344,71 +344,80 @@ export function PosClient({
         </div>
       )}
 
-      <div className="grid min-h-0 flex-1 gap-3 print:hidden lg:grid-cols-5">
-        <div className="flex min-h-0 flex-col rounded-2xl border border-border bg-surface-raised lg:col-span-3">
-          <div className="border-b border-border p-3">
+      <div className="grid min-h-0 flex-1 gap-3 lg:overflow-hidden print:hidden lg:grid-cols-5">
+        <div className="flex h-[min(58vh,520px)] min-h-0 flex-col overflow-hidden rounded-[var(--radius-lg)] border border-border/80 bg-surface-raised shadow-[var(--shadow)] lg:h-auto lg:col-span-3">
+          <div className="shrink-0 border-b border-border p-2.5 sm:p-3">
             <div className="flex gap-2">
               <div className="relative min-w-0 flex-1">
-                <Search className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-ink-faint" />
+                <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-faint sm:left-4 sm:h-5 sm:w-5" />
                 <input
                   ref={searchRef}
-                  className="h-14 w-full rounded-xl border-2 border-border bg-surface pl-12 pr-4 text-lg outline-none focus:border-brand focus:ring-4 focus:ring-brand/15"
-                  placeholder="Search or scan · Enter adds first match · F2 scan"
+                  className="h-12 w-full rounded-xl border-2 border-border bg-surface pl-10 pr-3 text-base outline-none focus:border-brand focus:ring-4 focus:ring-brand/15 sm:h-14 sm:pl-12 sm:pr-4 sm:text-lg"
+                  placeholder="Search or scan… (Enter · F2)"
+                  title="Search or scan · Enter adds first match · F2 opens scanner"
                   value={q}
                   onChange={(e) => setQ(e.target.value)}
                   autoFocus
                 />
               </div>
-              <ScanButton onClick={() => setScanning(true)} />
+              <ScanButton onClick={() => setScanning(true)} className="px-3 sm:px-4" />
             </div>
           </div>
-          <div className="grid flex-1 grid-cols-2 gap-2 overflow-y-auto p-3 sm:grid-cols-3">
-            {catalog.length === 0 && (
-              <p className="col-span-full py-12 text-center text-sm text-ink-muted">
+          <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-2.5 sm:p-3">
+            {catalog.length === 0 ? (
+              <p className="py-12 text-center text-sm text-ink-muted">
                 No products match — try another search or scan a barcode.
               </p>
+            ) : (
+              <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+                {catalog.map((p) => {
+                  const out = p.stock <= 0;
+                  const variant = variantLabel(p);
+                  return (
+                    <button
+                      key={p.id}
+                      type="button"
+                      onClick={() => addToCart(p)}
+                      disabled={out}
+                      className={cn(
+                        "flex min-h-[104px] flex-col overflow-hidden rounded-xl border p-2.5 text-left transition active:scale-[0.98] sm:p-3",
+                        out
+                          ? "cursor-not-allowed border-border bg-surface opacity-50"
+                          : "border-border bg-surface hover:border-brand hover:bg-brand-soft/40",
+                      )}
+                    >
+                      <p className="line-clamp-2 break-words text-[13px] font-semibold leading-snug text-ink sm:text-sm">
+                        {p.name}
+                      </p>
+                      {variant ? (
+                        <p className="mt-0.5 truncate text-[11px] text-ink-muted" title={variant}>
+                          {variant}
+                        </p>
+                      ) : null}
+                      <p className="mt-auto pt-2 font-display text-lg font-semibold leading-none tabular-nums text-brand sm:text-xl">
+                        {formatCurrency(p.sell)}
+                      </p>
+                      <p
+                        className={cn(
+                          "mt-1 truncate text-[11px]",
+                          out ? "text-danger" : p.stock <= p.minStock ? "text-warn" : "text-ink-faint",
+                        )}
+                      >
+                        {out ? "Out of stock" : `${p.stock} ${p.unit}`}
+                      </p>
+                    </button>
+                  );
+                })}
+              </div>
             )}
-            {catalog.map((p) => {
-              const out = p.stock <= 0;
-              return (
-                <button
-                  key={p.id}
-                  type="button"
-                  onClick={() => addToCart(p)}
-                  disabled={out}
-                  className={cn(
-                    "min-h-[96px] rounded-xl border p-3 text-left transition active:scale-[0.98]",
-                    out
-                      ? "cursor-not-allowed border-border bg-surface opacity-50"
-                      : "border-border bg-surface hover:border-brand hover:bg-brand-soft/40",
-                  )}
-                >
-                  <p className="line-clamp-2 text-sm font-semibold text-ink">{p.name}</p>
-                  {variantLabel(p) && (
-                    <p className="mt-0.5 text-[11px] text-ink-muted">{variantLabel(p)}</p>
-                  )}
-                  <p className="mt-2 font-display text-xl font-semibold text-brand">
-                    {formatCurrency(p.sell)}
-                  </p>
-                  <p
-                    className={cn(
-                      "text-[11px]",
-                      out ? "text-danger" : p.stock <= p.minStock ? "text-warn" : "text-ink-faint",
-                    )}
-                  >
-                    {out ? "Out of stock" : `${p.stock} ${p.unit}`}
-                  </p>
-                </button>
-              );
-            })}
           </div>
         </div>
 
-        <div className="flex min-h-0 flex-col rounded-2xl border border-border bg-ink text-white lg:col-span-2">
-          <div className="space-y-2 border-b border-white/10 px-4 py-3">
+        <div className="flex min-h-[420px] flex-col overflow-hidden rounded-[var(--radius-lg)] border border-brand-deep bg-brand text-white shadow-[var(--shadow)] lg:col-span-2 lg:min-h-0">
+          <div className="shrink-0 space-y-1.5 border-b border-white/10 px-3 py-2.5 sm:px-4 sm:py-3">
             <div className="flex items-center justify-between gap-2">
               <select
-                className="min-w-0 flex-1 bg-transparent text-sm font-medium outline-none"
+                className="min-w-0 flex-1 truncate bg-transparent text-sm font-medium outline-none"
                 value={customerId}
                 onChange={(e) => setCustomerId(e.target.value)}
               >
@@ -434,7 +443,7 @@ export function PosClient({
               </button>
             </div>
             {selectedCustomer && (
-              <p className="text-[11px] text-white/45">
+              <p className="truncate text-[11px] text-white/45">
                 {selectedCustomer.type}
                 {selectedCustomer.phone ? ` · ${selectedCustomer.phone}` : ""}
                 {selectedCustomer.balance > 0
@@ -444,21 +453,21 @@ export function PosClient({
             )}
           </div>
 
-          <ul className="flex-1 space-y-2 overflow-y-auto px-3 py-3">
+          <ul className="min-h-0 flex-1 space-y-2 overflow-y-auto overscroll-contain px-3 py-3">
             {cart.length === 0 && (
-              <li className="py-10 text-center text-sm text-white/40">
+              <li className="py-8 text-center text-sm text-white/40">
                 Scan or tap products → apply discount → pay
               </li>
             )}
             {cart.map((l) => (
-              <li key={l.id} className="flex items-center gap-2 rounded-xl bg-white/5 px-2 py-2.5">
+              <li key={l.id} className="flex items-center gap-2 rounded-xl bg-white/5 px-2 py-2">
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm font-medium">{l.name}</p>
-                  <p className="text-xs text-white/50">
+                  <p className="truncate text-xs text-white/50">
                     {formatCurrency(l.price)} · {formatCurrency(l.price * l.qty)}
                   </p>
                 </div>
-                <div className="flex items-center gap-1">
+                <div className="flex shrink-0 items-center gap-1">
                   <button
                     type="button"
                     className="rounded-lg bg-white/10 p-2"
@@ -466,7 +475,7 @@ export function PosClient({
                   >
                     <Minus className="h-4 w-4" />
                   </button>
-                  <span className="w-7 text-center text-base font-semibold">{l.qty}</span>
+                  <span className="w-7 text-center text-base font-semibold tabular-nums">{l.qty}</span>
                   <button
                     type="button"
                     className="rounded-lg bg-white/10 p-2"
@@ -477,7 +486,7 @@ export function PosClient({
                 </div>
                 <button
                   type="button"
-                  className="p-2 text-white/40 hover:text-red-300"
+                  className="shrink-0 p-2 text-white/40 hover:text-red-300"
                   onClick={() => updateQty(l.id, -l.qty)}
                 >
                   <Trash2 className="h-4 w-4" />
@@ -486,10 +495,10 @@ export function PosClient({
             ))}
           </ul>
 
-          <div className="space-y-3 border-t border-white/10 px-4 py-4">
-            <div className="flex items-center gap-2">
-              <Percent className="h-3.5 w-3.5 text-white/40" />
-              <div className="flex flex-wrap gap-1.5">
+          <div className="shrink-0 space-y-2.5 border-t border-white/10 px-3 py-3 sm:px-4">
+            <div className="flex items-start gap-2">
+              <Percent className="mt-1.5 h-3.5 w-3.5 shrink-0 text-white/40" />
+              <div className="flex min-w-0 flex-1 flex-wrap gap-1.5">
                 {DISCOUNT_PRESETS.map((d) => (
                   <button
                     key={d}
@@ -497,7 +506,7 @@ export function PosClient({
                     onClick={() => setDiscountPct(d)}
                     className={cn(
                       "rounded-lg px-2.5 py-1 text-xs font-semibold",
-                      discountPct === d ? "bg-brand text-white" : "bg-white/10 text-white/70 hover:bg-white/15",
+                      discountPct === d ? "bg-white text-brand" : "bg-white/10 text-white/70 hover:bg-white/15",
                     )}
                   >
                     {d}%
@@ -521,24 +530,24 @@ export function PosClient({
             </div>
 
             <div className="space-y-1 text-sm text-white/60">
-              <div className="flex justify-between">
+              <div className="flex justify-between gap-2">
                 <span>Subtotal</span>
-                <span>{formatCurrency(subtotal)}</span>
+                <span className="tabular-nums">{formatCurrency(subtotal)}</span>
               </div>
               {discountAmt > 0 && (
-                <div className="flex justify-between text-accent">
+                <div className="flex justify-between gap-2 text-accent">
                   <span>Discount ({discountPct}%)</span>
-                  <span>-{formatCurrency(discountAmt)}</span>
+                  <span className="tabular-nums">-{formatCurrency(discountAmt)}</span>
                 </div>
               )}
-              <div className="flex justify-between">
+              <div className="flex justify-between gap-2">
                 <span>VAT incl.</span>
-                <span>{formatCurrency(taxAmt)}</span>
+                <span className="tabular-nums">{formatCurrency(taxAmt)}</span>
               </div>
             </div>
-            <div className="flex justify-between font-display text-3xl font-semibold">
+            <div className="flex items-baseline justify-between gap-2 font-display text-2xl font-semibold tabular-nums sm:text-[1.75rem]">
               <span>Total</span>
-              <span>{formatCurrency(total)}</span>
+              <span className="min-w-0 truncate text-right">{formatCurrency(total)}</span>
             </div>
 
             {!splitOpen && !cashOpen ? (
@@ -560,9 +569,9 @@ export function PosClient({
                           ? "Select a named customer for credit"
                           : undefined
                       }
-                      className="flex h-14 flex-col items-center justify-center gap-1 rounded-xl bg-brand text-sm font-bold transition hover:bg-brand-deep active:scale-[0.98] disabled:opacity-40"
+                      className="flex h-12 flex-col items-center justify-center gap-0.5 rounded-2xl bg-white text-xs font-bold text-brand transition hover:bg-brand-soft active:scale-[0.98] disabled:opacity-40 sm:h-14 sm:text-sm"
                     >
-                      <Icon className="h-5 w-5" />
+                      <Icon className="h-4 w-4 sm:h-5 sm:w-5" />
                       {busy ? "…" : label}
                     </button>
                   ))}
@@ -571,9 +580,10 @@ export function PosClient({
                   type="button"
                   onClick={openSplit}
                   disabled={!cart.length || busy}
-                  className="flex h-11 w-full items-center justify-center gap-2 rounded-xl border border-white/20 text-sm font-semibold text-white/90 hover:bg-white/10 disabled:opacity-40"
+                  className="flex h-10 w-full items-center justify-center gap-2 rounded-xl border border-white/20 text-sm font-semibold text-white/90 hover:bg-white/10 disabled:opacity-40"
                 >
-                  <SplitSquareHorizontal className="h-4 w-4" /> Split pay (cash / card / MoMo)
+                  <SplitSquareHorizontal className="h-4 w-4 shrink-0" />
+                  <span className="truncate">Split pay</span>
                 </button>
               </>
             ) : cashOpen ? (
@@ -628,7 +638,7 @@ export function PosClient({
                         cashTendered,
                       })
                     }
-                    className="h-11 rounded-xl bg-brand text-sm font-bold disabled:opacity-40"
+                    className="h-11 rounded-2xl bg-white text-sm font-bold text-brand disabled:opacity-40"
                   >
                     {busy ? "…" : "Confirm cash"}
                   </button>
@@ -683,7 +693,7 @@ export function PosClient({
                       if (splitMomo > 0) parts.push({ method: "MOMO", amount: splitMomo });
                       void submitPayments(parts);
                     }}
-                    className="h-11 rounded-xl bg-brand text-sm font-bold disabled:opacity-40"
+                    className="h-11 rounded-2xl bg-white text-sm font-bold text-brand disabled:opacity-40"
                   >
                     {busy ? "…" : "Confirm split"}
                   </button>

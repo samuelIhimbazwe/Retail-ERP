@@ -7,9 +7,9 @@ import { Clock, Phone } from "lucide-react";
 
 const tones = {
   brand: "bg-brand text-white hover:bg-brand-deep active:scale-[0.98]",
-  info: "bg-info text-white hover:bg-[#155a74] active:scale-[0.98]",
-  accent: "bg-accent text-white hover:bg-[#a34a1c] active:scale-[0.98]",
-  warn: "bg-warn text-white hover:bg-[#92400e] active:scale-[0.98]",
+  info: "bg-info text-white hover:bg-[#3a6570] active:scale-[0.98]",
+  accent: "bg-accent text-white hover:bg-[#9e7d2f] active:scale-[0.98]",
+  warn: "bg-warn text-white hover:bg-[#a67a14] active:scale-[0.98]",
 };
 
 export function CounterClient({ businessName }: { businessName: string }) {
@@ -39,7 +39,7 @@ export function CounterClient({ businessName }: { businessName: string }) {
             key={a.id}
             href={a.href}
             className={cn(
-              "flex min-h-[140px] flex-col justify-between rounded-2xl p-5 shadow-[var(--shadow)] transition sm:min-h-[160px] sm:p-6",
+              "flex min-h-[140px] flex-col justify-between rounded-[var(--radius-lg)] p-5 shadow-[var(--shadow)] transition sm:min-h-[160px] sm:p-6",
               tones[a.tone],
             )}
           >

@@ -12,10 +12,19 @@ export function PageHeader({
   className?: string;
 }) {
   return (
-    <div className={cn("mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between", className)}>
-      <div>
-        <h1 className="font-display text-2xl font-semibold tracking-tight text-ink sm:text-3xl">{title}</h1>
-        {description && <p className="mt-1 max-w-2xl text-sm text-ink-muted">{description}</p>}
+    <div
+      className={cn(
+        "mb-5 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between",
+        className,
+      )}
+    >
+      <div className="min-w-0">
+        <h1 className="text-[22px] font-semibold leading-tight tracking-tight text-ink sm:text-[24px]">
+          {title}
+        </h1>
+        {description && (
+          <p className="mt-1 max-w-2xl text-[13px] text-ink-muted">{description}</p>
+        )}
       </div>
       {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}
     </div>
@@ -40,20 +49,20 @@ export function Panel({
   return (
     <section
       className={cn(
-        "overflow-hidden rounded-[var(--radius)] border border-border bg-surface-raised shadow-[var(--shadow-sm)]",
+        "overflow-hidden rounded-[var(--radius-lg)] border border-border/80 bg-surface-raised shadow-[var(--shadow)]",
         className,
       )}
     >
       {(title || actions) && (
-        <header className="flex items-center justify-between gap-3 border-b border-border px-4 py-3">
-          <div>
-            {title && <h2 className="text-sm font-semibold text-ink">{title}</h2>}
-            {subtitle && <p className="text-xs text-ink-faint">{subtitle}</p>}
+        <header className="flex min-h-12 items-center justify-between gap-3 border-b border-border/70 px-4 py-3 sm:px-5">
+          <div className="min-w-0">
+            {title && <h2 className="truncate text-[14px] font-semibold text-ink">{title}</h2>}
+            {subtitle && <p className="truncate text-[12px] text-ink-faint">{subtitle}</p>}
           </div>
-          {actions}
+          {actions && <div className="flex shrink-0 items-center gap-1.5">{actions}</div>}
         </header>
       )}
-      <div className={cn("p-4", bodyClassName)}>{children}</div>
+      <div className={cn("p-4 sm:p-5", bodyClassName)}>{children}</div>
     </section>
   );
 }
@@ -69,22 +78,23 @@ export function Button({
   size?: "sm" | "md" | "lg";
 }) {
   const variants = {
-    primary: "bg-brand text-white hover:bg-brand-deep",
-    secondary: "border border-border bg-surface-raised text-ink hover:bg-surface-sunken",
+    primary: "bg-brand text-white hover:bg-brand-deep shadow-[var(--shadow-sm)]",
+    secondary:
+      "border border-border bg-surface-raised text-ink hover:bg-surface shadow-[var(--shadow-sm)]",
     ghost: "text-ink-muted hover:bg-surface-sunken hover:text-ink",
-    danger: "bg-danger text-white hover:bg-red-800",
-    accent: "bg-accent text-white hover:bg-orange-800",
+    danger: "bg-danger text-white hover:brightness-95",
+    accent: "bg-accent text-white hover:brightness-95",
   };
   const sizes = {
-    sm: "h-8 px-3 text-xs",
-    md: "h-9 px-3.5 text-sm",
-    lg: "h-11 px-5 text-sm",
+    sm: "h-8 px-3 text-[12px]",
+    md: "h-10 px-4 text-[13px]",
+    lg: "h-11 px-5 text-[14px]",
   };
 
   return (
     <button
       className={cn(
-        "inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-colors disabled:opacity-50",
+        "inline-flex items-center justify-center gap-1.5 rounded-full font-medium transition-colors disabled:opacity-50",
         variants[variant],
         sizes[size],
         className,
@@ -103,7 +113,7 @@ export function Input({
   return (
     <input
       className={cn(
-        "h-9 w-full rounded-lg border border-border bg-surface-raised px-3 text-sm text-ink outline-none placeholder:text-ink-faint focus:border-brand focus:ring-2 focus:ring-brand/20",
+        "h-10 w-full rounded-2xl border border-border bg-surface-sunken/60 px-3.5 text-[13px] text-ink outline-none placeholder:text-ink-faint focus:border-brand focus:bg-surface-raised focus:ring-4 focus:ring-brand/10",
         className,
       )}
       {...props}
@@ -119,12 +129,32 @@ export function Select({
   return (
     <select
       className={cn(
-        "h-9 rounded-lg border border-border bg-surface-raised px-3 text-sm text-ink outline-none focus:border-brand focus:ring-2 focus:ring-brand/20",
+        "h-10 rounded-2xl border border-border bg-surface-sunken/60 px-3.5 text-[13px] text-ink outline-none focus:border-brand focus:bg-surface-raised focus:ring-4 focus:ring-brand/10",
         className,
       )}
       {...props}
     >
       {children}
     </select>
+  );
+}
+
+/** ERP-style filter / action toolbar strip */
+export function ControlPanel({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
+  return (
+    <div
+      className={cn(
+        "mb-4 flex flex-wrap items-center gap-2 rounded-[var(--radius-lg)] border border-border/80 bg-surface-raised px-4 py-3 shadow-[var(--shadow-sm)]",
+        className,
+      )}
+    >
+      {children}
+    </div>
   );
 }

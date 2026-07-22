@@ -26,10 +26,10 @@ export function ReportsChart({
     <div className="h-72">
       <ResponsiveContainer width="100%" height="100%">
         <BarChart data={chartData.length ? chartData : data}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#d4dde3" />
-          <XAxis dataKey="label" tick={{ fontSize: 11, fill: "#7a92a4" }} interval="preserveStartEnd" />
+          <CartesianGrid strokeDasharray="3 3" stroke="#e3e9e7" />
+          <XAxis dataKey="label" tick={{ fontSize: 11, fill: "#8a9895" }} interval="preserveStartEnd" />
           <YAxis
-            tick={{ fontSize: 11, fill: "#7a92a4" }}
+            tick={{ fontSize: 11, fill: "#8a9895" }}
             tickFormatter={(v) =>
               Number(v) >= 1_000_000
                 ? `${(Number(v) / 1e6).toFixed(1)}M`
@@ -41,8 +41,8 @@ export function ReportsChart({
             contentStyle={{ borderRadius: 8, fontSize: 12 }}
           />
           <Legend />
-          <Bar dataKey="revenue" name="Revenue" fill="#0b6e4f" radius={[4, 4, 0, 0]} />
-          <Bar dataKey="expenses" name="COGS" fill="#c45c26" radius={[4, 4, 0, 0]} />
+          <Bar dataKey="revenue" name="Revenue" fill="#0f3d3a" radius={[4, 4, 0, 0]} />
+          <Bar dataKey="expenses" name="COGS" fill="#c4a35a" radius={[4, 4, 0, 0]} />
         </BarChart>
       </ResponsiveContainer>
     </div>

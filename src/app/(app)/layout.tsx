@@ -21,30 +21,37 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   );
 
   return (
-    <div className="flex h-screen overflow-hidden">
+    <div className="flex h-screen overflow-hidden bg-surface">
       <div className="hidden lg:block">
         <Sidebar />
       </div>
 
       {mobileOpen && (
         <div className="fixed inset-0 z-40 lg:hidden">
-          <div className="absolute inset-0 bg-ink/50" onClick={() => setMobileOpen(false)} />
-          <div className="absolute inset-y-0 left-0 w-[280px] bg-sidebar">
-            <div className="flex items-center justify-between border-b border-white/10 px-4 py-4">
-              <div className="min-w-0">
-                <p className="font-display text-lg font-semibold text-white">RBIAP</p>
+          <div className="absolute inset-0 bg-ink/30" onClick={() => setMobileOpen(false)} />
+          <div className="absolute inset-y-0 left-0 w-[var(--sidebar-width)] bg-sidebar shadow-[var(--shadow-lg)]">
+            <div className="flex h-[var(--topbar-height)] items-center justify-between border-b border-border px-4">
+              <div className="flex items-center gap-2.5">
+                <div className="flex h-9 w-9 items-center justify-center rounded-2xl bg-brand text-sm font-bold text-white">
+                  R
+                </div>
+                <p className="text-[15px] font-semibold text-ink">RBIAP</p>
               </div>
-              <button type="button" onClick={() => setMobileOpen(false)} className="text-white/70">
+              <button
+                type="button"
+                onClick={() => setMobileOpen(false)}
+                className="rounded-full p-1.5 text-ink-faint hover:bg-surface-sunken"
+              >
                 <X className="h-5 w-5" />
               </button>
             </div>
-            <nav className="h-[calc(100%-64px)] overflow-y-auto px-2 py-3">
+            <nav className="h-[calc(100%-var(--topbar-height))] overflow-y-auto px-3 py-3">
               {nav.map((group) => (
-                <div key={group.title} className="mb-4">
-                  <p className="mb-1.5 px-2 text-[10px] font-semibold uppercase tracking-wider text-white/35">
+                <div key={group.title} className="mb-5">
+                  <p className="mb-2 px-3 text-[10px] font-semibold uppercase tracking-[0.12em] text-ink-faint">
                     {group.title}
                   </p>
-                  <ul className="space-y-0.5">
+                  <ul className="space-y-1">
                     {group.items.map((item) => {
                       const active = pathname === item.href;
                       const Icon = item.icon;
@@ -54,8 +61,10 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                             href={item.href}
                             onClick={() => setMobileOpen(false)}
                             className={cn(
-                              "flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm",
-                              active ? "bg-brand text-white" : "text-white/70 hover:bg-white/5",
+                              "flex items-center gap-3 rounded-full px-3 py-2.5 text-[13px] font-medium",
+                              active
+                                ? "bg-brand text-white shadow-[var(--shadow-sm)]"
+                                : "text-ink-muted hover:bg-sidebar-hover hover:text-ink",
                             )}
                           >
                             <Icon className="h-4 w-4" />
@@ -74,7 +83,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
       <div className="flex min-w-0 flex-1 flex-col">
         <Topbar onMenu={() => setMobileOpen(true)} />
-        <main className="app-canvas flex-1 overflow-y-auto p-4 md:p-6">{children}</main>
+        <main className="app-canvas min-h-0 flex-1 overflow-y-auto p-4 md:p-6">{children}</main>
       </div>
     </div>
   );

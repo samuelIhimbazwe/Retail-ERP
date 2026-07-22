@@ -30,27 +30,40 @@ export function KpiCard({
   return (
     <div
       className={cn(
-        "rounded-[var(--radius)] border border-border bg-surface-raised p-4 shadow-[var(--shadow-sm)]",
+        "rounded-[var(--radius-lg)] border border-border/80 bg-surface-raised p-4 shadow-[var(--shadow)] sm:p-5",
         className,
       )}
     >
       <div className="flex items-start justify-between gap-3">
-        <div>
-          <p className="text-xs font-medium uppercase tracking-wide text-ink-faint">{label}</p>
-          <p className="mt-1.5 font-display text-2xl font-semibold tracking-tight text-ink">{display}</p>
+        <div className="min-w-0">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-ink-faint">
+            {label}
+          </p>
+          <p className="mt-2 truncate text-[24px] font-semibold leading-none tracking-tight text-ink">
+            {display}
+          </p>
           {change !== undefined && (
             <p
               className={cn(
-                "mt-1.5 flex items-center gap-1 text-xs font-medium",
+                "mt-2 flex items-center gap-1 text-[12px] font-medium",
                 change >= 0 ? "text-success" : "text-danger",
               )}
             >
-              {change >= 0 ? <TrendingUp className="h-3.5 w-3.5" /> : <TrendingDown className="h-3.5 w-3.5" />}
+              {change >= 0 ? (
+                <TrendingUp className="h-3.5 w-3.5" />
+              ) : (
+                <TrendingDown className="h-3.5 w-3.5" />
+              )}
               {formatPercent(change)} vs yesterday
             </p>
           )}
         </div>
-        <div className={cn("flex h-10 w-10 items-center justify-center rounded-xl", tones[tone])}>
+        <div
+          className={cn(
+            "flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl",
+            tones[tone],
+          )}
+        >
           <Icon className="h-5 w-5" />
         </div>
       </div>

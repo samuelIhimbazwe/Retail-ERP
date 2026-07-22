@@ -306,7 +306,7 @@ export function ScanButton({
       type="button"
       onClick={onClick}
       className={cn(
-        "inline-flex h-14 shrink-0 items-center justify-center gap-2 rounded-xl bg-ink px-4 text-sm font-semibold text-white hover:bg-[#163247] active:scale-[0.98]",
+        "inline-flex h-12 shrink-0 items-center justify-center gap-2 rounded-full bg-brand px-3 text-sm font-semibold text-white hover:bg-brand-deep active:scale-[0.98] sm:h-14 sm:px-4",
         className,
       )}
     >

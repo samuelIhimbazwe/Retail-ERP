@@ -16,7 +16,7 @@ import {
   YAxis,
 } from "recharts";
 
-const PIE_COLORS = ["#0b6e4f", "#1a6b8a", "#c45c26", "#b45309", "#64748b", "#0f766e"];
+const PIE_COLORS = ["#0f3d3a", "#7da87a", "#c4a35a", "#5a8f8f", "#a8c47a", "#0a2e2c"];
 
 export function BiRevenueChart({
   data,
@@ -29,10 +29,10 @@ export function BiRevenueChart({
     <div className="h-64">
       <ResponsiveContainer width="100%" height="100%">
         <LineChart data={chartData.length ? chartData : data}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#d4dde3" />
-          <XAxis dataKey="label" tick={{ fontSize: 11, fill: "#7a92a4" }} interval="preserveStartEnd" />
+          <CartesianGrid strokeDasharray="3 3" stroke="#e3e9e7" />
+          <XAxis dataKey="label" tick={{ fontSize: 11, fill: "#8a9895" }} interval="preserveStartEnd" />
           <YAxis
-            tick={{ fontSize: 11, fill: "#7a92a4" }}
+            tick={{ fontSize: 11, fill: "#8a9895" }}
             tickFormatter={(v) =>
               Number(v) >= 1_000_000
                 ? `${(Number(v) / 1e6).toFixed(1)}M`
@@ -43,8 +43,8 @@ export function BiRevenueChart({
             formatter={(v) => formatCurrency(Number(v))}
             contentStyle={{ borderRadius: 8, fontSize: 12 }}
           />
-          <Line type="monotone" dataKey="revenue" name="Revenue" stroke="#0b6e4f" strokeWidth={2} dot={false} />
-          <Line type="monotone" dataKey="expenses" name="COGS" stroke="#c45c26" strokeWidth={2} dot={false} />
+          <Line type="monotone" dataKey="revenue" name="Revenue" stroke="#0f3d3a" strokeWidth={2} dot={false} />
+          <Line type="monotone" dataKey="expenses" name="COGS" stroke="#c4a35a" strokeWidth={2} dot={false} />
         </LineChart>
       </ResponsiveContainer>
     </div>
@@ -69,15 +69,15 @@ export function BiProductsChart({ data }: { data: { name: string; sales: number 
     <div className="h-64">
       <ResponsiveContainer width="100%" height="100%">
         <BarChart data={rows} layout="vertical" margin={{ left: 8, right: 8 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#d4dde3" />
+          <CartesianGrid strokeDasharray="3 3" stroke="#e3e9e7" />
           <XAxis
             type="number"
-            tick={{ fontSize: 11, fill: "#7a92a4" }}
+            tick={{ fontSize: 11, fill: "#8a9895" }}
             tickFormatter={(v) => `${(Number(v) / 1e3).toFixed(0)}k`}
           />
-          <YAxis type="category" dataKey="name" width={100} tick={{ fontSize: 11, fill: "#4a6274" }} />
+          <YAxis type="category" dataKey="name" width={100} tick={{ fontSize: 11, fill: "#5f6f6c" }} />
           <Tooltip formatter={(v) => formatCurrency(Number(v))} contentStyle={{ borderRadius: 8, fontSize: 12 }} />
-          <Bar dataKey="sales" fill="#1a6b8a" radius={[0, 4, 4, 0]} />
+          <Bar dataKey="sales" fill="#7da87a" radius={[0, 4, 4, 0]} />
         </BarChart>
       </ResponsiveContainer>
     </div>
@@ -123,14 +123,14 @@ export function BiCategoryChart({ data }: { data: { category: string; sales: num
     <div className="h-56">
       <ResponsiveContainer width="100%" height="100%">
         <BarChart data={data.slice(0, 8)}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#d4dde3" />
-          <XAxis dataKey="category" tick={{ fontSize: 10, fill: "#7a92a4" }} interval={0} angle={-20} textAnchor="end" height={50} />
+          <CartesianGrid strokeDasharray="3 3" stroke="#e3e9e7" />
+          <XAxis dataKey="category" tick={{ fontSize: 10, fill: "#8a9895" }} interval={0} angle={-20} textAnchor="end" height={50} />
           <YAxis
-            tick={{ fontSize: 11, fill: "#7a92a4" }}
+            tick={{ fontSize: 11, fill: "#8a9895" }}
             tickFormatter={(v) => `${(Number(v) / 1e3).toFixed(0)}k`}
           />
           <Tooltip formatter={(v) => formatCurrency(Number(v))} contentStyle={{ borderRadius: 8, fontSize: 12 }} />
-          <Bar dataKey="sales" fill="#0b6e4f" radius={[4, 4, 0, 0]} />
+          <Bar dataKey="sales" fill="#0f3d3a" radius={[4, 4, 0, 0]} />
         </BarChart>
       </ResponsiveContainer>
     </div>

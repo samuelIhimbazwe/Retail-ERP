@@ -267,7 +267,7 @@ export function ReceiveClient({
                     "mt-4 flex h-14 w-full items-center justify-center gap-2 rounded-xl text-base font-semibold transition",
                     justDone
                       ? "bg-success text-white"
-                      : "bg-accent text-white hover:bg-[#a34a1c] active:scale-[0.99]",
+                      : "bg-accent text-white hover:bg-[#9e7d2f] active:scale-[0.99]",
                   )}
                 >
                   {justDone ? (

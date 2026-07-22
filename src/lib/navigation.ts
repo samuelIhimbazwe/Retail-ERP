@@ -39,7 +39,7 @@ export type NavGroup = {
 
 export const navigation: NavGroup[] = [
   {
-    title: "Rush (≤ 1 min)",
+    title: "Favorites",
     items: [
       { label: "Counter Mode", href: "/counter", icon: Zap, module: 0 },
       { label: "Sell (POS)", href: "/pos", icon: ShoppingCart, module: 7 },

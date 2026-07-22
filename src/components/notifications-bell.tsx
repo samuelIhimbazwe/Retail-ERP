@@ -62,18 +62,18 @@ export function NotificationsBell() {
           setOpen((o) => !o);
           if (!open) load();
         }}
-        className="relative rounded-lg p-2 text-ink-muted hover:bg-surface-sunken"
+        className="relative flex h-10 w-10 items-center justify-center rounded-full border border-border bg-surface-raised text-ink-muted shadow-[var(--shadow-sm)] transition hover:text-ink"
         aria-label="Notifications"
       >
-        <Bell className="h-5 w-5" />
+        <Bell className="h-4 w-4" />
         {unread > 0 && (
-          <span className="absolute right-1 top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-accent px-1 text-[10px] font-bold text-white">
+          <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-danger px-1 text-[10px] font-bold text-white">
             {unread > 9 ? "9+" : unread}
           </span>
         )}
       </button>
       {open && (
-        <div className="absolute right-0 z-40 mt-2 w-80 overflow-hidden rounded-xl border border-border bg-surface-raised shadow-[var(--shadow-lg)]">
+        <div className="absolute right-0 z-40 mt-2 w-80 overflow-hidden rounded-[var(--radius-lg)] border border-border bg-surface-raised shadow-[var(--shadow-lg)]">
           <div className="flex items-center justify-between border-b border-border px-3 py-2">
             <p className="text-sm font-semibold">
               Notifications{pending ? "…" : ""}

@@ -139,21 +139,21 @@ export function GlobalSearch() {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="flex min-w-0 items-center gap-2 rounded-lg border border-border bg-surface px-2.5 py-1.5 text-left text-ink-muted hover:border-border-strong hover:bg-surface-sunken sm:min-w-[200px] lg:min-w-[260px]"
+        className="flex h-10 w-full min-w-0 items-center gap-2 rounded-full border border-border bg-surface-raised px-3.5 text-left text-ink-muted shadow-[var(--shadow-sm)] hover:border-border-strong hover:text-ink"
         aria-label="Open global search"
       >
-        <Search className="h-3.5 w-3.5 shrink-0" />
-        <span className="hidden flex-1 truncate text-xs sm:inline">Search products, customers…</span>
-        <kbd className="hidden rounded border border-border bg-surface-raised px-1.5 py-0.5 text-[10px] font-medium text-ink-faint md:inline">
+        <Search className="h-4 w-4 shrink-0" />
+        <span className="hidden flex-1 truncate text-[13px] sm:inline">Search…</span>
+        <kbd className="hidden rounded-full border border-border bg-surface px-2 py-0.5 text-[10px] font-medium text-ink-faint md:inline">
           ⌘K
         </kbd>
       </button>
 
       {open && (
-        <div className="fixed inset-0 z-50 flex items-start justify-center px-3 pt-[12vh] sm:pt-[15vh]">
+        <div className="fixed inset-0 z-50 flex items-start justify-center px-3 pt-[10vh] sm:pt-[12vh]">
           <button
             type="button"
-            className="absolute inset-0 bg-ink/40 backdrop-blur-[2px]"
+            className="absolute inset-0 bg-ink/40"
             aria-label="Close search"
             onClick={() => setOpen(false)}
           />
@@ -161,7 +161,7 @@ export function GlobalSearch() {
             role="dialog"
             aria-modal="true"
             aria-label="Global search"
-            className="relative z-10 w-full max-w-xl overflow-hidden rounded-2xl border border-border bg-surface-raised shadow-[var(--shadow-lg)]"
+            className="relative z-10 w-full max-w-xl overflow-hidden rounded-[var(--radius-lg)] border border-border bg-surface-raised shadow-[var(--shadow-lg)]"
           >
             <div className="flex items-center gap-2 border-b border-border px-3">
               <Search className="h-4 w-4 shrink-0 text-ink-faint" />
