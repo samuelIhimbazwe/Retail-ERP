@@ -1,5 +1,5 @@
 import { getCustomers, getProducts } from "@/lib/actions";
-import { requireSession } from "@/auth";
+import { requireWebSession } from "@/lib/web-session";
 import { PosClient } from "@/components/pos-client";
 
 export default async function PosPage({
@@ -9,7 +9,7 @@ export default async function PosPage({
 }) {
   const params = await searchParams;
   const [session, products, customers] = await Promise.all([
-    requireSession(),
+    requireWebSession(),
     getProducts(),
     getCustomers(),
   ]);
