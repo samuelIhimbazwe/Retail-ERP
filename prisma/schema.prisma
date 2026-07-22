@@ -1,13 +1,12 @@
-// RBIAP Phase 1 schema
-// Local:  provider = "sqlite"   + DATABASE_URL="file:./dev.db"
-// Deploy: provider = "postgresql" + DATABASE_URL=postgres connection string
+// RBIAP schema — PostgreSQL (Neon / production)
+// Set DATABASE_URL to your Neon pooled connection string locally and on Vercel/Render.
 
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 

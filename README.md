@@ -5,38 +5,56 @@ Retail OS for shops: Counter Mode (sell / stock check / receive / customer pay),
 ## Stack
 
 - Next.js 16 · React 19 · TypeScript · Tailwind CSS 4
-- Prisma 6 · **SQLite** (local) · **PostgreSQL** (production)
+- Prisma 6 · **PostgreSQL (Neon)**
 - Auth.js (NextAuth v5) · Zod · bcryptjs · html5-qrcode
 
-## Real business setup (recommended)
+## Architecture (important)
+
+RBIAP is a **full-stack Next.js** app: the UI, Auth.js, and server actions share one process.
+
+| Piece | Where it runs |
+|-------|----------------|
+| Database | **Neon** (PostgreSQL) |
+| App (UI + server/API) | **Vercel** (recommended) **or** **Render** Web Service |
+
+You do **not** need Vercel for frontend *and* Render for backend at the same time for this repo. Pick **one** app host + Neon. `vercel.json` and `render.yaml` are both included so you can use either.
+
+## Local setup
+
+1. Create a Neon project and copy the **pooled** connection string.
+2. Configure env:
 
 ```bash
 npm install
 cp .env.example .env
-# Set AUTH_SECRET to a long random string
-npm run db:wipe    # empty database (destroys all data)
+```
+
+Set in `.env`:
+
+- `DATABASE_URL` → Neon URL  
+- `AUTH_SECRET` → `openssl rand -base64 32`  
+- `AUTH_URL` → `http://localhost:3000`
+
+3. Create tables and run:
+
+```bash
+npm run db:push
 npm run dev
 ```
 
-Open http://localhost:3000 → **first-run setup** creates your business, main branch, chart of accounts, and owner account. Then invite staff from **User Management**.
+Open http://localhost:3000 → **`/setup`** creates your business and owner account.
 
-To wipe an existing demo DB and start clean: `npm run db:wipe`, restart the app, complete `/setup`.
-
-## Optional demo data
+### Optional demo data
 
 ```bash
-npm run db:seed    # loads "Kigali Fresh" sample tenant
+npm run db:seed    # "Kigali Fresh" sample tenant
 # or
 npm run db:reset   # wipe + seed
 ```
 
 Demo login (seed only): `jean@kigalifresh.rw` / `demo1234`
 
-After `db:wipe` / `db:reset`, sign out and sign in again so the session matches new DB ids.
-
 ## Optional SMTP
-
-Add to `.env` to email invites and password resets:
 
 ```
 SMTP_HOST=smtp.example.com
@@ -44,65 +62,33 @@ SMTP_PORT=587
 SMTP_USER=...
 SMTP_PASS=...
 SMTP_FROM=RBIAP <noreply@yourbusiness.com>
-AUTH_URL=http://localhost:3000
+AUTH_URL=https://your-production-url
 ```
 
-Without SMTP, admins still get a copyable link / mailto draft.
+Without SMTP, admins still get a copyable invite / reset link.
 
-## Deploy (Vercel + PostgreSQL)
+## Deploy on Vercel (recommended)
 
-SQLite is for local only. Serverless hosts cannot keep a durable SQLite file — use **PostgreSQL** (Neon, Supabase, Prisma Postgres, Railway, etc.).
+1. Push this repo to GitHub.
+2. [vercel.com](https://vercel.com) → **Add New Project** → import the repo.
+3. Environment variables:
 
-### 1. Create a Postgres database
-
-Copy the connection string (prefer the **pooled** URL if your provider offers one).
-
-### 2. Point Prisma at Postgres
-
-In `prisma/schema.prisma`, change the datasource:
-
-```prisma
-datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-}
-```
-
-Commit that change before (or with) your deploy push. Keep using SQLite locally until you are ready to switch.
-
-### 3. Set environment variables on the host
-
-| Variable | Required | Notes |
+| Variable | Required | Value |
 |----------|----------|--------|
-| `DATABASE_URL` | Yes | Postgres connection string |
-| `AUTH_SECRET` | Yes | `openssl rand -base64 32` |
-| `AUTH_URL` | Yes | Public URL, e.g. `https://your-app.vercel.app` |
-| `SMTP_*` | No | Email invites / password resets |
+| `DATABASE_URL` | Yes | Neon pooled URL |
+| `AUTH_SECRET` | Yes | long random secret |
+| `AUTH_URL` | Yes | `https://your-app.vercel.app` |
+| `SMTP_*` | No | email invites / resets |
 
-### 4. Build & schema sync
+4. Deploy. `vercel.json` runs `prisma generate && prisma db push && next build`.
+5. Open the URL → complete **`/setup`**.
 
-`npm run build` already runs `prisma generate` (also via `postinstall`). On first deploy (or after schema changes), sync tables once:
+## Deploy on Render (alternative to Vercel)
 
-```bash
-# From your machine against the production DATABASE_URL, or via host CLI:
-npx prisma db push
-```
-
-Or set the Vercel build command to:
-
-```bash
-prisma generate && prisma db push && next build
-```
-
-(`db push` on every build is fine for early launch; switch to `prisma migrate deploy` later if you adopt migrations.)
-
-### 5. Push & open the app
-
-```bash
-git push
-```
-
-Connect the repo in Vercel (or your host), set the env vars, deploy. Open the production URL → complete **`/setup`** for a clean business (or run `npm run db:seed` against prod only if you want demo data).
+1. [render.com](https://render.com) → **New** → **Blueprint** (uses `render.yaml`), or **Web Service** from the repo.
+2. Set the same env vars (`DATABASE_URL`, `AUTH_SECRET`, `AUTH_URL=https://your-service.onrender.com`).
+3. Free tier sleeps when idle; first request after sleep can be slow.
+4. Open the service URL → **`/setup`**.
 
 ## Live modules
 
