@@ -22,6 +22,25 @@ function LoginForm() {
     setLoading(true);
     setError(null);
 
+    const split = Boolean(process.env.NEXT_PUBLIC_API_URL || process.env.NEXT_PUBLIC_SPLIT_DEPLOY === "1");
+
+    if (split) {
+      const res = await fetch("/api/session", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+      setLoading(false);
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        setError(data?.error || "Invalid email or password");
+        return;
+      }
+      router.push("/counter");
+      router.refresh();
+      return;
+    }
+
     const result = await signIn("credentials", {
       email,
       password,

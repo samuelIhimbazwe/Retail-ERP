@@ -3,7 +3,7 @@
 import { LogOut, Menu, Settings, Zap } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useSession, signOut } from "next-auth/react";
+import { useAppSession } from "@/components/providers";
 import { useState } from "react";
 import { GlobalSearch } from "@/components/global-search";
 import { NotificationsBell } from "@/components/notifications-bell";
@@ -18,7 +18,7 @@ const rushLinks = [
 
 export function Topbar({ onMenu }: { onMenu?: () => void }) {
   const pathname = usePathname();
-  const { data: session } = useSession();
+  const { data: session, signOut } = useAppSession();
   const [menuOpen, setMenuOpen] = useState(false);
 
   const name = session?.user?.name ?? "User";
@@ -140,7 +140,10 @@ export function Topbar({ onMenu }: { onMenu?: () => void }) {
                 type="button"
                 role="menuitem"
                 className="flex w-full items-center gap-2 px-4 py-2.5 text-left text-[13px] text-danger hover:bg-danger-soft"
-                onClick={() => signOut({ callbackUrl: "/login" })}
+                onClick={async () => {
+                  await signOut();
+                  window.location.href = "/login";
+                }}
               >
                 <LogOut className="h-3.5 w-3.5" />
                 Sign out

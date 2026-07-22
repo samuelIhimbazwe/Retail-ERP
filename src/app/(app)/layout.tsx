@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { useSession } from "next-auth/react";
+import { useAppSession } from "@/components/providers";
 import { Sidebar } from "@/components/layout/sidebar";
 import { Topbar } from "@/components/layout/topbar";
 import { navigation } from "@/lib/navigation";
@@ -14,7 +14,7 @@ import { X } from "lucide-react";
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const pathname = usePathname();
-  const { data: session } = useSession();
+  const { data: session } = useAppSession();
   const nav = useMemo(
     () => navigationForRole(session?.user?.role ?? "CASHIER", navigation),
     [session?.user?.role],

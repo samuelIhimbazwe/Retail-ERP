@@ -168,7 +168,7 @@ export function PayrollClient({ data }: { data: PayrollPayload }) {
         });
         setMessage({
           ok: true,
-          text: `Paid ${result.staffCount} staff · ${formatCurrency(result.amount)} · ${result.journalNumber ?? "journal posted"}`,
+          text: `Paid ${result.staffCount} staff · ${formatCurrency(result.total)} · ${result.journalNumber ?? "journal posted"}`,
         });
         setShowRun(false);
         setNote("");

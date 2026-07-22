@@ -115,7 +115,14 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   },
 });
 
+import { getAlsSession } from "@/lib/session-als";
+
 export async function requireSession() {
+  const als = getAlsSession();
+  if (als?.user?.id && als.user.businessId) {
+    return als;
+  }
+
   const session = await auth();
   if (!session?.user?.id || !session.user.businessId) {
     throw new Error("Unauthorized");

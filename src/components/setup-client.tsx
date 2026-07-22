@@ -28,7 +28,7 @@ export function SetupClient() {
     setError(null);
     startTransition(async () => {
       try {
-        const result = await bootstrapBusiness({
+        const result = (await bootstrapBusiness({
           businessName,
           currency,
           vatPercent: Number(vatPercent),
@@ -39,16 +39,33 @@ export function SetupClient() {
           password,
           confirmPassword: confirm,
           acceptTerms: accepted,
-        });
+        })) as { ownerEmail: string; ok?: boolean };
 
-        const signed = await signIn("credentials", {
-          email: result.ownerEmail,
-          password,
-          redirect: false,
-        });
-        if (signed?.error) {
-          router.push("/login");
-          return;
+        const emailForLogin = result.ownerEmail || ownerEmail;
+        const split = Boolean(
+          process.env.NEXT_PUBLIC_API_URL || process.env.NEXT_PUBLIC_SPLIT_DEPLOY === "1",
+        );
+
+        if (split) {
+          const res = await fetch("/api/session", {
+            method: "POST",
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify({ email: emailForLogin, password }),
+          });
+          if (!res.ok) {
+            router.push("/login");
+            return;
+          }
+        } else {
+          const signed = await signIn("credentials", {
+            email: emailForLogin,
+            password,
+            redirect: false,
+          });
+          if (signed?.error) {
+            router.push("/login");
+            return;
+          }
         }
         router.push("/dashboard");
         router.refresh();

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useSession } from "next-auth/react";
+import { useAppSession } from "@/components/providers";
 import { navigation } from "@/lib/navigation";
 import { navigationForRole } from "@/lib/rbac";
 import { cn } from "@/lib/utils";
@@ -13,7 +13,7 @@ const COLLAPSE_KEY = "rbiap.sidebar.collapsed";
 
 export function Sidebar() {
   const pathname = usePathname();
-  const { data: session } = useSession();
+  const { data: session } = useAppSession();
   const [collapsed, setCollapsed] = useState(false);
 
   useEffect(() => {

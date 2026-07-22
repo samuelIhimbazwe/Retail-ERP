@@ -1,24 +1,25 @@
-# Optional: host the full Next.js app on Render instead of (or as a backup to) Vercel.
-# Neon remains the database. Do not run Vercel "frontend-only" + Render "API" for this
-# repo — Server Actions live inside Next.js, not a separate backend process.
-#
-# Render Dashboard → New → Blueprint → connect this repo, or create a Web Service manually.
+# Render = API only (Express + Prisma + Neon)
+# Vercel = Web UI (Next.js) pointing at this API via API_URL
 
 services:
   - type: web
-    name: rbiap
+    name: rbiap-api
     runtime: node
     plan: free
     region: oregon
-    buildCommand: npm install && npx prisma generate && npx prisma db push && npm run build
-    startCommand: npm run start
-    healthCheckPath: /login
+    buildCommand: npm install && npx prisma generate && npx prisma db push
+    startCommand: npm run start:api
+    healthCheckPath: /health
     envVars:
       - key: NODE_VERSION
         value: "22"
+      - key: PORT
+        value: "4000"
       - key: DATABASE_URL
         sync: false
       - key: AUTH_SECRET
+        sync: false
+      - key: WEB_ORIGIN
         sync: false
       - key: AUTH_URL
         sync: false
